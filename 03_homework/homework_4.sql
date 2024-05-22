@@ -9,7 +9,7 @@ product_name || ', ' || product_size|| ' (' || product_qty_type || ')'
 FROM product
 
 But wait! The product table has some bad data (a few NULL values). 
-Find the NULLs and then using COALESCE, replace the NULL with a 
+Find the NULLs and then using , replace the NULL with a 
 blank for the first problem, and 'unit' for the second problem. 
 
 HINT: keep the syntax the same, but edited the correct components with the string. 
@@ -17,7 +17,9 @@ The `||` values concatenate the columns into strings.
 Edit the appropriate columns -- you're making two edits -- and the NULL rows will be fixed. 
 All the other rows will remain the same.) */
 
-
+SELECT 
+product_name || ', ' || COALESCE(product_size, '') || ' (' || COALESCE(product_qty_type, 'unit') || ')'
+FROM product
 
 
 --Windowed Functions
@@ -29,12 +31,34 @@ You can either display all rows in the customer_purchases table, with the counte
 each new market date for each customer, or select only the unique market dates per customer 
 (without purchase details) and number those visits. 
 HINT: One of these approaches uses ROW_NUMBER() and one uses DENSE_RANK(). */
+SELECT x.customer_id, x.market_date, x.visit_number
+FROM (	
+	SELECT *,
+	DENSE_RANK() OVER (PARTITION BY customer_id ORDER BY market_date ASC) as visit_number
+	FROM customer_purchases
+	) as x
+GROUP BY x.customer_id, x.market_date, x.visit_number
+	
 
 
 /* 2. Reverse the numbering of the query from a part so each customer’s most recent visit is labeled 1, 
 then write another query that uses this one as a subquery (or temp table) and filters the results to 
 only the customer’s most recent visit. */
 
+SELECT 	
+	x.customer_id, x.market_date, x.transaction_time, x.visit_number
+FROM 	
+	(	
+	SELECT *,
+	ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY market_date DESC, transaction_time DESC) as visit_number
+	FROM customer_purchases
+	) as x
+WHERE x.visit_number = 1
 
 /* 3. Using a COUNT() window function, include a value along with each row of the 
 customer_purchases table that indicates how many different times that customer has purchased that product_id. */
+
+SELECT *, 
+	  COUNT() OVER (PARTITION BY product_id, customer_id) product_purchased
+FROM customer_purchases 
+

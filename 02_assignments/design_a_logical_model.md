@@ -13,18 +13,30 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 
 _Hint, search type 1 vs type 2 slowly changing dimensions._
 
+
 Bonus: Are there privacy implications to this, why or why not?
 ```
-Your answer...
+It's easier to comply with privacy policies, using type 1 slowly changing dimensions over type 2, since the amount of stored data is significantly lower, we don't store the historical data, and also it is easier to manage, delete the data if needed. 
 ```
+
 
 ## Question 4
 Review the AdventureWorks Schema [here](https://i.stack.imgur.com/LMu4W.gif)
 
 Highlight at least two differences between it and your ERD. Would you change anything in yours?
 ```
-Your answer...
+The AdwentureWorks schema has additional set of tables to measure the sales per sale person to calculate the compensation. 
+What is also interesting is that since the company works worldwide it has tables for currency exchange rates and also taxes rates. 
+For my ERD I would add a table with special offers information, to provide customers with promocodes and discounts. After review I also added the current inventory state table and vendor information table. 
 ```
+
+## My ERDs:
+**ERD type 1 SCD:**
+![image info](ERD_type_1_SCD.jpeg)
+
+**ERD type 2 SCD:**
+![image info](ERD_type_2_SCD.jpeg)
+
 
 # Criteria
 
